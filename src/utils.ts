@@ -41,7 +41,7 @@ export const caseInsensitiveEnum = <U extends string, T extends [U, ...U[]]>(val
 export const generateRandomSourceId = () => `sender-${Math.ceil(Math.random() * 10e5)}`
 
 export const withTimeout =
-  (timeout = 3000, onTimeout = () => {}, timeoutError = new Error('timed out')) =>
+  (timeout = 3000, onTimeout = () => {}, timeoutError: () => void) =>
   <T>(p: Promise<T>) =>
     Promise.race([
       p,

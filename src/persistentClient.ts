@@ -18,7 +18,7 @@ export const connect = ({
   port = 8009,
   timeout = 3000,
   onTimeout = () => {},
-  timeoutError = new Error('timed out')
+  timeoutError = new Error('timed out'),
 }: {
   host: string
   client?: Client
@@ -42,7 +42,11 @@ export const connect = ({
 
   const send = client.send.bind(client)
 
-  return withTimeout(timeout, onTimeout, timeoutError)(
+  return withTimeout(
+    timeout,
+    onTimeout,
+    timeoutError
+  )(
     new Promise(resolve => {
       if (isConnected) return resolve({close, send, createChannel: createChannel(client)})
 
