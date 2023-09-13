@@ -2,7 +2,6 @@ import {Client} from 'castv2'
 import Debug from 'debug'
 
 import {createChannel} from './channel'
-import {withTimeout} from './utils'
 const debug = Debug('persistent-client')
 
 export type PersistentClient = {
@@ -16,17 +15,11 @@ export const connect = ({
   client = new Client(),
   retryDelay = 5000,
   port = 8009,
-  timeout = 3000,
-  onTimeout = () => {},
-  timeoutError = () => {},
 }: {
   host: string
   client?: Client
   retryDelay?: number
   port?: number
-  timeout?: number
-  onTimeout?: () => void
-  timeoutError?: () => void
 }): Promise<PersistentClient> => {
   let shouldReconnect = true
   let isConnected = false
@@ -58,7 +51,7 @@ export const connect = ({
         if (shouldReconnect) {
           debug(`client reconnecting in ${retryDelay}ms`)
           setTimeout(() => {
-            connect({host, client, retryDelay, port, timeout})
+            connect({host, client, retryDelay, port})
           }, retryDelay)
         }
       })
