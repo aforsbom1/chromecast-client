@@ -42,34 +42,28 @@ export const connect = ({
 
   const send = client.send.bind(client)
 
-  return withTimeout(
-    timeout,
-    onTimeout,
-    timeoutError
-  )(
-    new Promise(resolve => {
-      if (isConnected) return resolve({close, send, createChannel: createChannel(client)})
+  return new Promise(resolve => {
+    if (isConnected) return resolve({close, send, createChannel: createChannel(client)})
 
-      client.connect({host, port}, () => {
-        isConnected = true
+    client.connect({host, port}, () => {
+      isConnected = true
 
-        sendHeartbeat()
-        const timer = setInterval(sendHeartbeat, 5000)
+      sendHeartbeat()
+      const timer = setInterval(sendHeartbeat, 5000)
 
-        client.once('close', () => {
-          isConnected = false
-          clearInterval(timer)
+      client.once('close', () => {
+        isConnected = false
+        clearInterval(timer)
 
-          if (shouldReconnect) {
-            debug(`client reconnecting in ${retryDelay}ms`)
-            setTimeout(() => {
-              connect({host, client, retryDelay, port, timeout})
-            }, retryDelay)
-          }
-        })
-
-        resolve({close, send, createChannel: createChannel(client)})
+        if (shouldReconnect) {
+          debug(`client reconnecting in ${retryDelay}ms`)
+          setTimeout(() => {
+            connect({host, client, retryDelay, port, timeout})
+          }, retryDelay)
+        }
       })
+
+      resolve({close, send, createChannel: createChannel(client)})
     })
-  )
+  })
 }
