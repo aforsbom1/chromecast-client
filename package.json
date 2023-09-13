@@ -29,7 +29,7 @@
     "build": "run-p clean fix && run-p build:esm build:cjs",
     "build:esm": "tsc --module esnext --outDir dist/esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "prepublishOnly": "npm run build",
+    "prepare": "npm run build",
     "runExample-platform": "ts-node ./examples/platform",
     "runExample-mediaApp": "ts-node ./examples/mediaApp",
     "runExample-errorHandling": "ts-node ./examples/errorHandling",
