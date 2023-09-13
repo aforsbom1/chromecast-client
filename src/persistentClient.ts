@@ -17,12 +17,16 @@ export const connect = ({
   retryDelay = 5000,
   port = 8009,
   timeout = 3000,
+  onTimeout = () => {},
+  timeoutError = new Error('timed out')
 }: {
   host: string
   client?: Client
   retryDelay?: number
   port?: number
   timeout?: number
+  onTimeout?: () => void
+  timeoutError?: Error
 }): Promise<PersistentClient> => {
   let shouldReconnect = true
   let isConnected = false
@@ -38,7 +42,7 @@ export const connect = ({
 
   const send = client.send.bind(client)
 
-  return withTimeout({timeout})(
+  return withTimeout(timeout, onTimeout, timeoutError)(
     new Promise(resolve => {
       if (isConnected) return resolve({close, send, createChannel: createChannel(client)})
 
