@@ -18,7 +18,7 @@ export const connect = ({
   port = 8009,
   timeout = 3000,
   onTimeout = () => {},
-  timeoutError = new Error('timed out'),
+  timeoutError = () => {},
 }: {
   host: string
   client?: Client
@@ -26,7 +26,7 @@ export const connect = ({
   port?: number
   timeout?: number
   onTimeout?: () => void
-  timeoutError?: Error
+  timeoutError?: () => void
 }): Promise<PersistentClient> => {
   let shouldReconnect = true
   let isConnected = false
